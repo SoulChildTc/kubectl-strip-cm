@@ -1,6 +1,6 @@
 # kubectl strip-cm
 
-![kubectl-strip-cm.gif](https://github.com/SoulChildTc/kubectl-strip-cm/raw/main/kubectl-strip-cm.gif?raw=true)
+![kubectl-strip-cm.gif](https://raw.githubusercontent.com/SoulChildTc/kubectl-strip-cm/main/images/kubectl-strip-cm.gif)
 
 ## Installation
 
@@ -19,7 +19,3 @@ k strip-cm -n kube-system filebeat-config
 # use the -f option, ignore prompts.
 k strip-cm -n kube-system filebeat-config -f
 ```
-
-
-k edit cm -n kube-system filebeat-config
-k strip-cm -n kube-system filebeat-config
