@@ -8,15 +8,15 @@ from_file_params=""
 mkdir ${temp_dir}
 
 while [ $# -gt 0 ]; do
-  key="$1"
+  key="${1}"
 
-  case $key in
+  case ${key} in
   -v | --version)
-    echo "kubectl stripcm: $version"
+    echo "kubectl stripcm: ${version}"
     exit 0
     ;;
   --context)
-    kubectl="$kubectl --context $2"
+    kubectl="$kubectl --context ${2}"
     shift
     shift
     ;;
@@ -25,7 +25,7 @@ while [ $# -gt 0 ]; do
     shift
     ;;
   --kubeconfig)
-    kubectl="$kubectl --kubeconfig $2"
+    kubectl="$kubectl --kubeconfig ${2}"
     shift
     shift
     ;;
@@ -34,7 +34,7 @@ while [ $# -gt 0 ]; do
     shift
     ;;
   -n | --namespace)
-    kubectl="$kubectl --namespace $2"
+    kubectl="$kubectl --namespace ${2}"
     shift
     shift
     ;;
@@ -51,7 +51,7 @@ while [ $# -gt 0 ]; do
     break
     ;;
   *)
-    if [ -z "$cm_name" ]; then
+    if [ -z "${cm_name}" ]; then
       cm_name="${1}"
       shift
     else
@@ -67,10 +67,10 @@ annotations=$(${kubectl} get cm ${cm_name} -o go-template='{{printf "  annotatio
 files=$(${kubectl} get cm ${cm_name} -o go-template='{{range $filename,$_ := .data}}{{$filename}}{{print "\n"}}{{end}}')
 
 
-for filename in $files
+for filename in ${files}
 do
-  escape_filename=$(echo $filename | sed s#\\.#\\\\.#)
-  ${kubectl} get cm ${cm_name} -o jsonpath="{.data.${escape_filename}}" | sed -E  -e 's/[[:space:]]+$//g' -e 's/\t/    /g' > ${temp_dir}/$filename
+  escape_filename=$(echo ${filename} | sed s#\\.#\\\\.#)
+  ${kubectl} get cm ${cm_name} -o jsonpath="{.data.${escape_filename}}" | sed -E  -e 's/[[:space:]]+$//g' -e 's/\t/    /g' > ${temp_dir}/${filename}
   from_file_params="${from_file_params} --from-file ${temp_dir}/${filename}"
 done
 
@@ -80,8 +80,8 @@ then
     echo "${new_obj}" | ${kubectl} replace -f -
 else
     echo "${new_obj}"
-    read -p "Can the configmap be replaced? (y/n) " replace
-    if [[ "${replace}" =~ y|Y|n|N ]]
+    read -p "Can the configmap be replaced? (y/n) " confirm
+    if [[ "${confirm}" =~ y|Y ]]
     then
         echo "${new_obj}" | ${kubectl} replace -f -
     fi
