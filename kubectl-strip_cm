@@ -80,7 +80,7 @@ then
     echo "${new_obj}" | ${kubectl} replace -f -
 else
     echo "${new_obj}"
-    read -p "Can the configmap be replaced? (y/n) " confirm
+    read -p "Can the configmap be replaced? (y|Y) " confirm
     if [[ "${confirm}" =~ y|Y ]]
     then
         echo "${new_obj}" | ${kubectl} replace -f -
