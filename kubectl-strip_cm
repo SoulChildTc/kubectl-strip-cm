@@ -62,8 +62,8 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-labels=$(${kubectl} get cm ${cm_name} -o go-template='{{printf "  labels:\n"}}{{range $k, $v := .metadata.labels}}    {{$k}}: "{{$v}}"{{printf "\\n"}}{{end}}')
-annotations=$(${kubectl} get cm ${cm_name} -o go-template='{{printf "  annotations:\n"}}{{range $k, $v := .metadata.annotations}}    {{$k}}: "{{$v}}"{{printf "\\n"}}{{end}}')
+labels=$(${kubectl} get cm ${cm_name} -o go-template='{{printf "  labels:"}}{{range $k, $v := .metadata.labels}}{{printf "\n"}}    {{$k}}: {{printf "| \n      "}}{{$v}}{{end}}')
+annotations=$(${kubectl} get cm ${cm_name} -o go-template='{{printf "  annotations:"}}{{range $k, $v := .metadata.annotations}}{{printf "\n"}}    {{$k}}: {{printf "| \n      "}}{{$v}}{{end}}')
 files=$(${kubectl} get cm ${cm_name} -o go-template='{{range $filename,$_ := .data}}{{$filename}}{{print "\n"}}{{end}}')
 
 
@@ -74,7 +74,12 @@ do
   from_file_params="${from_file_params} --from-file ${temp_dir}/${filename}"
 done
 
-new_obj=$(echo -e "$(${kubectl} create cm ${cm_name} ${from_file_params} --dry-run=client -o yaml)\n${labels}\n${annotations}" | grep -v '^$')
+new_obj=$(${kubectl} create cm ${cm_name} ${from_file_params} --dry-run=client -o yaml)
+new_obj="${new_obj}
+${labels}
+${annotations}
+"
+
 if [ ${force} -eq 1 ]
 then
     echo "${new_obj}" | ${kubectl} replace -f -
