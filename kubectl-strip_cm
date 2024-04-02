@@ -62,7 +62,7 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-labels=$(${kubectl} get cm ${cm_name} -o go-template='{{printf "  labels:"}}{{range $k, $v := .metadata.labels}}{{printf "\n"}}    {{$k}}: {{printf "| \n      "}}{{$v}}{{end}}')
+labels=$(${kubectl} get cm ${cm_name} -o go-template='{{printf "  labels:"}}{{range $k, $v := .metadata.labels}}{{printf "\n"}}    {{$k}}: {{printf "|- \n      "}}{{$v}}{{end}}')
 annotations=$(${kubectl} get cm ${cm_name} -o go-template='{{printf "  annotations:"}}{{range $k, $v := .metadata.annotations}}{{printf "\n"}}    {{$k}}: {{printf "| \n      "}}{{$v}}{{end}}')
 files=$(${kubectl} get cm ${cm_name} -o go-template='{{range $filename,$_ := .data}}{{$filename}}{{print "\n"}}{{end}}')
 
